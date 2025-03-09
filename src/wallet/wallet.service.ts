@@ -33,6 +33,28 @@ export class WalletService {
     });
   }
 
+  async deduct(deductDto: {
+    amount: number,
+    isTransactionProcessed: boolean,
+    userId: number
+  }) {
+
+    const wallet = await this.databaseService.wallet.findUnique({ where: { userId: deductDto.userId } })
+
+    // Check if transaction has been fulfilled before and do nothing
+    if (deductDto.isTransactionProcessed == true) {
+      return wallet
+    }
+
+    // Else fulfill transaction and return new wallet record to user
+    return this.databaseService.wallet.update({
+      where: { userId: deductDto.userId },
+      data: {
+        amount: wallet.amount - deductDto.amount
+      }
+    });
+  }
+
 
 
   async findAll() {

@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  EDITOR
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  first_name String
+  last_name  String
+  password   String
+  image_url  String
+  role       UserRole @default(USER)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Wallet Wallet[]
+
+  Logs Logs[]
+
+  AirtimeDataConversion AirtimeDataConversion[]
+
+  Transaction Transaction[]
+}
+
+model Variations {
+  id               Int   @id @default(autoincrement()) @map("_id")
+  variation_code   String   @unique
+  name             String
+  variation_amount String
+  fixedPrice       String
+  service          String
+  salePrice        String?
+  updatedAt        DateTime @default(now()) @updatedAt
+}
+
+
+enum ProjectCategory {
+  REAL_ESTATE
+  SWIMMING_POOL
+  ARCHITECTURAL_DESIGN
+  CONSTRUCTION
+}
+
+enum STATUS {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Wallet {
+  id         Int    @id @default(autoincrement())
+  walletNo   String @unique
+  amount     Float  @default(0.00)
+  userId     Int @unique
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  baseCurrency  String @default("NGN")
+  pin        Pin?   @relation()  // Just define the relation, no fields/references here
+}
+
+model Pin {
+  id             Int    @id @default(autoincrement()) @map("_id")
+  walletId       Int    @unique
+  wallet         Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)  // Define fields & references only here
+  pin            String
+  changePinToken String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+}
+
+
+
+
+enum Device {
+  WEB
+  MOBILE
+}
+
+
+model Logs {
+  id        Int   @id @default(autoincrement()) @map("_id")
+  device    Device   @default(WEB)
+  activity  String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+
+
+model AirtimeDataConversion {
+  id            Int  @id @default(autoincrement()) @map("_id")
+  userId        Int
+  user          User    @relation(fields: [userId], references: [id])
+  category      String
+  incomingPhone String
+  networkProvider       String
+  paymentMethod String
+  amount        Int
+  status        String
+  bankName      String?
+  accountNumber String?
+}
+
+
+model Transaction {
+  id          Int   @id @default(autoincrement()) @map("_id")
+  reference   String @unique
+  email       String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  type        ServiceType
+  amount      Int
+  description String
+  currency    String @default("NGN")
+  isTopUp     Boolean? @default(false)
+  status      TransactionStatus @default(PENDING)
+  pdfUrl      String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+}
+
+enum TransactionStatus {
+  SUCCESS
+  PENDING
+  FAILED
+  CANCELLED
+}
+
+enum ServiceType {
+  AIRTIME
+  DATA
+  ELECTRICITY
+  GIFT_CARD
+  CRYPTO
+  WALLET_TOPUP
+}

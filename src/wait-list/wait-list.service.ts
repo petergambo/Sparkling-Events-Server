@@ -1,26 +1,36 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { CreateWaitListDto } from './dto/create-wait-list.dto';
-import { UpdateWaitListDto } from './dto/update-wait-list.dto';
+import { Prisma, } from '@prisma/client';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class WaitListService {
-  create(createWaitListDto: CreateWaitListDto) {
-    return 'This action adds a new waitList';
+  constructor(
+    private readonly databaseService: DatabaseService, 
+  ){}
+  async create(createWaitListDto: Prisma.WaitListCreateInput) {
+    const existingUser = await this.databaseService.waitList.findUnique({
+      where: { email: createWaitListDto.email },
+    });
+  
+    if (existingUser) {
+      return { message: "This email is already on the waitlist." };
+    }
+  
+    const newEntry = await this.databaseService.waitList.create({
+      data: createWaitListDto,
+    });
+  
+    return { message: "Congratulations! Successfully added to the waitlist.", data: newEntry };
   }
+  
 
   findAll() {
-    return `This action returns all waitList`;
+    return this.databaseService.waitList.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} waitList`;
+    return this.databaseService.waitList.findFirst({where: {id}});
   }
 
-  update(id: number, updateWaitListDto: UpdateWaitListDto) {
-    return `This action updates a #${id} waitList`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} waitList`;
-  }
 }

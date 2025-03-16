@@ -17,9 +17,12 @@ import { WaitListModule } from './wait-list/wait-list.module';
 import { AdminSettingsModule } from './admin-settings/admin-settings.module';
 import { UserSettingsModule } from './user-settings/user-settings.module';
 import { EmailModule } from './email/email.module';
+import { AirtimeReloadlyModule } from './airtime-reloadly/airtime-reloadly.module';
+import { DataReloadlyModule } from './data-reloadly/data-reloadly.module';
+import { BillsPayReloadlyModule } from './bills-pay-reloadly/bills-pay-reloadly.module';
 
 @Module({
-  imports: [UsersModule, TransactionsModule, WalletModule, DatabaseModule, AuthModule, AirtimeModule, DataModule, GiftCardsModule, BillsPayModule, CryptoExchangeModule, WaitListModule, AdminSettingsModule, UserSettingsModule, EmailModule],
+  imports: [UsersModule, TransactionsModule, WalletModule, DatabaseModule, AuthModule, AirtimeModule, DataModule, GiftCardsModule, BillsPayModule, CryptoExchangeModule, WaitListModule, AdminSettingsModule, UserSettingsModule, EmailModule, AirtimeReloadlyModule, DataReloadlyModule, BillsPayReloadlyModule],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -28,6 +31,7 @@ export class AppModule {
     consumer.apply(JwtAuthMiddleware).exclude(
       { path: 'users/register', method:  RequestMethod.POST },
       { path: 'users/login', method:  RequestMethod.POST },
+      { path: 'wait-list', method:  RequestMethod.POST },
     ).forRoutes('*'); // Apply to all routes
   }
 }

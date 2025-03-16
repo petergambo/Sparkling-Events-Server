@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
 import { JwtAuthMiddleware } from 'src/middlewares/jwt-auth.middleware';
@@ -28,6 +28,12 @@ export class UsersController {
   @UseGuards(JwtAuthMiddleware)
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
+  }
+
+  @Get('current/logged-in')
+  findCurrentUser(@Req() req) {
+    console.log("Request User:", req.user); // Debugging
+    return this.usersService.findOne(parseInt(req.user)); // Extract user ID from request
   }
 
   @Patch(':id')

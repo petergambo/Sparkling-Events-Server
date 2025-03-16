@@ -17,7 +17,11 @@ export class TransactionsService {
   
 
   findAll() {
-    return this.databaseService.transaction.findMany({include:{user: true}});
+    return this.databaseService.transaction.findMany({include:{user: true}, orderBy:{createdAt: 'desc'}});
+  }
+
+  findAllByUserId(id: number) {
+    return this.databaseService.transaction.findMany({where: {userId: id},include:{user: true}, orderBy:{createdAt: 'desc'}});
   }
 
   findOne(id: number) {

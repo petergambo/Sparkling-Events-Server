@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Prisma } from '@prisma/client';
 
@@ -15,6 +15,11 @@ export class TransactionController {
   @Get("all")
   findAll() {
     return this.projectsService.findAll();
+  }
+
+  @Get("all/current-user")
+  findAllCurrentUser(@Req() req) {
+    return this.projectsService.findAllByUserId(parseInt(req.user));
   }
 
   @Get(':id')

@@ -154,3 +154,10 @@ enum ServiceType {
   CRYPTO
   WALLET_TOPUP
 }
+
+model WaitList {
+  id          Int   @id @default(autoincrement()) @map("_id")
+  email       String @unique
+  fullname String
+  createdAt   DateTime @default(now())
+}

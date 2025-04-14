@@ -6,7 +6,7 @@ import { CreateDataReloadlyDto } from './dto/create-data-reloadly.dto';
 import { WalletService } from 'src/wallet/wallet.service';
 // import { airtimeSchema } from './dto/validator';
 import { TransactionsService } from 'src/transactions/transactions.service';
-import { generateVTPassRequestId } from 'src/utils/functions';
+import { generateVTPassRequestId, sendEmail } from 'src/utils/functions';
 import { TransactionStatus, ServiceType } from '@prisma/client';
 
 @Controller('data-reloadly')
@@ -61,7 +61,20 @@ export class AirtimeReloadlyController {
         });
 
         await this.transactionService.update(transaction.id, { isTopUp: true });
-
+        try {
+          await sendEmail(
+            createAirtimeReloadlyDto.recipientEmail,
+            `<p>You have successfully purchased Data worth ${transaction.currency}${transaction.amount} for ${createAirtimeReloadlyDto.recipientPhone.number} </p> <p>Date: ${transaction.createdAt}<br/>
+            Transaction Reference: ${transaction.reference}</p> <p>Thank you for transacting with us</p>`,
+            
+            `${transaction.currency}${transaction.amount} Data Purchase Successful!`, 
+            
+            "Transaction Notification"
+          )
+         } catch (error) {
+          console.log(error)
+         }
+         
         return {
           message: 'Data Purchased Successfully',
           transaction,

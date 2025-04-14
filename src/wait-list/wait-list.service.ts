@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
+import { sendEmail } from 'src/utils/functions';
 
 @Injectable()
 export class WaitListService {
@@ -20,7 +21,18 @@ export class WaitListService {
     const newEntry = await this.databaseService.waitList.create({
       data: createWaitListDto,
     });
-  
+    if(newEntry){
+      try {
+        await sendEmail(
+          newEntry.email,
+          "<p>You have successfully joined the ICM Lux Elite Wait list</p> <p>You will get updates about exclusive offers delivered to you.</p> <p>Thank you</p>",
+          "Congratulations!", 
+          "Notification"
+        )
+       } catch (error) {
+        console.log(error)
+       }
+    }
     return { message: "Congratulations! Successfully added to the waitlist.", data: newEntry };
   }
   

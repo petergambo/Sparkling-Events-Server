@@ -6,7 +6,7 @@ import { CreateAirtimeReloadlyDto } from './dto/create-airtime-reloadly.dto';
 import { WalletService } from 'src/wallet/wallet.service';
 // import { airtimeSchema } from './dto/validator';
 import { TransactionsService } from 'src/transactions/transactions.service';
-import { generateVTPassRequestId } from 'src/utils/functions';
+import { generateVTPassRequestId, sendEmail } from 'src/utils/functions';
 import { TransactionStatus, ServiceType } from '@prisma/client';
 
 @Controller('airtime-reloadly')
@@ -18,7 +18,7 @@ export class AirtimeReloadlyController {
   ) {}
 
   @Post('buy')
-  async create(@Body() createAirtimeReloadlyDto: CreateAirtimeReloadlyDto) {
+  async buy(@Body() createAirtimeReloadlyDto: CreateAirtimeReloadlyDto) {
     // Validate Data
     // const { error } = airtimeSchema.validate(createAirtimeReloadlyDto);
     // if (error) {
@@ -66,6 +66,20 @@ export class AirtimeReloadlyController {
 
         await this.transactionService.update(transaction.id, { isTopUp: true });
 
+        try {
+          await sendEmail(
+            createAirtimeReloadlyDto.recipientEmail,
+            `<p>You have successfully purchased ${transaction.currency}${transaction.amount} for ${createAirtimeReloadlyDto.recipientPhone.number} </p> <p>Date: ${transaction.createdAt}<br/>
+            Transaction Reference: ${transaction.reference}</p> <p>Thank you for transacting with us</p>`,
+            
+            `${transaction.currency}${transaction.amount} Airtime Purchase Successful!`, 
+            
+            "Transaction Notification"
+          )
+         } catch (error) {
+          console.log(error)
+         }
+         
         return {
           message: 'Airtime Purchased Successfully',
           transaction,

@@ -133,15 +133,15 @@ export class UsersService {
     try {
       await sendEmail(
         verifyOtpDTO.email,
-        `<p>Hello ${res.first_name}<br/>You have successfully verified your ICM account.</p>
-        <p>You can proceed to Login and enjoy the services on our platform</p>
+        `<p>Hello ${res.first_name}<br/>You have successfully verified your ICM Lux Elite account.</p>
+        <p>You can proceed to <a href='https://icm-lux-elite.vercel.app/auth/signin'>Login here</a> and enjoy the services on our platform</p>
         <p>Welcome onboard</p>
         <p>ICM Lux Elite Team
         <br/>Jos, Plateau state.
         </p>
         `,
         "Account Verified Successfully", 
-        "Account Verification"
+        "Notification"
       )
      } catch (error) {
       console.log(error)

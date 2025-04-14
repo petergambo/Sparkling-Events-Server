@@ -5,7 +5,7 @@ import { CreateGiftCardsDto } from './dto/create-gift-card.dto';
 import { WalletService } from 'src/wallet/wallet.service';
 // import { airtimeSchema } from './dto/validator';
 import { TransactionsService } from 'src/transactions/transactions.service';
-import { generateVTPassRequestId } from 'src/utils/functions';
+import { generateVTPassRequestId, sendEmail } from 'src/utils/functions';
 import { TransactionStatus, ServiceType } from '@prisma/client';
 
 @Controller('gift-cards')
@@ -60,7 +60,20 @@ export class GiftCardsController {
         });
 
         await this.transactionService.update(transaction.id, { isTopUp: true });
-
+        try {
+          await sendEmail(
+            createAirtimeReloadlyDto.recipientEmail,
+            `<p>You have successfully purchased ${transaction.currency}${transaction.amount} for ${createAirtimeReloadlyDto.recipientPhone.number} </p> <p>Date: ${transaction.createdAt}<br/>
+            Transaction Reference: ${transaction.reference}</p> <p>Thank you for transacting with us</p>`,
+            
+            `${transaction.currency}${transaction.amount} Airtime Purchase Successful!`, 
+            
+            "Transaction Notification"
+          )
+         } catch (error) {
+          console.log(error)
+         }
+         
         return {
           message: 'Data Purchased Successfully',
           transaction,

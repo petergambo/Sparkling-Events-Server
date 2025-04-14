@@ -60,7 +60,8 @@ export async function sendOtpEmail(email: string, otp: string) {
     from: `"ICM Lux Elite" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Your OTP Code',
-    html: `<p>Your OTP code is: <b>${otp}</b>. It expires in 10 minutes.</p>`,
+    html: `<p>Your OTP code is: <b>${otp}</b>. It expires in 10 minutes.</p> 
+    <p><a href="https://icm-lux-elite.vercel.app/auth/otp/${email}">Go to otp page here</a></p>`,
   });
 }
 
@@ -77,7 +78,7 @@ export async function sendEmail(email: string, body: string, subject:string, ema
   });
 
   await transporter.sendMail({
-    from: `"ICM ${emailSenderTitle}" <${process.env.EMAIL_USER}>`,
+    from: `"ICM Lux Elite ${emailSenderTitle}" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: subject,
     html: body,

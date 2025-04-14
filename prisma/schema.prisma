@@ -22,7 +22,7 @@ model User {
   image_url  String
   isVerified Boolean  @default(false)
   phone      String   @default("")
-  otp        String?  @unique
+  otp        String? 
   role       UserRole @default(USER)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

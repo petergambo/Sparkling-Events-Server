@@ -20,21 +20,21 @@ export class TransactionsService {
     return this.databaseService.transaction.findMany({include:{user: true}, orderBy:{createdAt: 'desc'}});
   }
 
-  findAllByUserId(id: number) {
+  findAllByUserId(id: string) {
     return this.databaseService.transaction.findMany({where: {userId: id},include:{user: true}, orderBy:{createdAt: 'desc'}});
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.databaseService.transaction.findUnique({where: {id}, include:{user: true}});
   }
 
-  update(id: number, updateProjectDto: Prisma.TransactionUpdateInput) {
+  update(id: string, updateProjectDto: Prisma.TransactionUpdateInput) {
     return this.databaseService.transaction.update({
       where:{id},
       data: updateProjectDto});
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.databaseService.transaction.delete({where: {id}});
   }
 }

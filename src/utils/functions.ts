@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
+import * as nodemailer from 'nodemailer';
 export const generate_otp = () => {
     const firstTwo = Math.floor(10 + Math.random() * 90).toString();
     const secondTwo = Math.floor(10 + Math.random() * 90).toString();
     const lastTwo = Math.floor(10 + Math.random() * 90).toString();
 
-    const otp = firstTwo.toString() + secondTwo.toString() + lastTwo.toString()
+    const otp = firstTwo.toString() + secondTwo.toString() + lastTwo.toString();
 
     return otp
 }
@@ -40,6 +41,49 @@ export function generateVTPassRequestId() {
     const randomNumber = Math.floor(100000000000 + Math.random() * 900000000000); // Generates a 12-digit number
     return `ICM${randomNumber}`;
 }
-    
+
+export async function sendOtpEmail(email: string, otp: string) {
+  const transporter = nodemailer.createTransport({
+    host: 'mail.myincome.com.ng',
+    port: 465, // SMTP over SSL
+    secure: true, // Use SSL/TLS
+    auth: {
+      user: 'noreply@myincome.com.ng',
+      pass: 'Reloadly$21',
+    },
   
+  });
   
+
+
+  await transporter.sendMail({
+    from: `"ICM Lux Elite" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: 'Your OTP Code',
+    html: `<p>Your OTP code is: <b>${otp}</b>. It expires in 10 minutes.</p>`,
+  });
+}
+
+export async function sendEmail(email: string, body: string, subject:string, emailSenderTitle: string) {
+  const transporter = nodemailer.createTransport({
+    host: 'mail.myincome.com.ng',
+    port: 465, // SMTP over SSL
+    secure: true, // Use SSL/TLS
+    auth: {
+      user: 'noreply@myincome.com.ng',
+      pass: 'Reloadly$21',
+    },
+  
+  });
+
+  await transporter.sendMail({
+    from: `"ICM ${emailSenderTitle}" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: subject,
+    html: body,
+  });
+}
+
+export function generateOtp(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}

@@ -18,6 +18,11 @@ export class UsersController {
     return this.usersService.login(loginUserDTO);
   }
 
+  @Post("verify-otp")
+  verifyOtp(@Body() verifyOtpDTO: {email: string, otp: string}) {
+    return this.usersService.verifyOtp(verifyOtpDTO);
+  }
+
   @Get()
   @UseGuards(JwtAuthMiddleware)
   findAll() {
@@ -27,22 +32,22 @@ export class UsersController {
   @Get(':id')
   @UseGuards(JwtAuthMiddleware)
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOne(id);
   }
 
   @Get('current/logged-in')
   findCurrentUser(@Req() req) {
     console.log("Request User:", req.user); // Debugging
-    return this.usersService.findOne(parseInt(req.user)); // Extract user ID from request
+    return this.usersService.findOne(req.user); // Extract user ID from request
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: Prisma.UserUpdateInput) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }

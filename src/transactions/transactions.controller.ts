@@ -19,21 +19,21 @@ export class TransactionController {
 
   @Get("all/current-user")
   findAllCurrentUser(@Req() req) {
-    return this.projectsService.findAllByUserId(parseInt(req.user));
+    return this.projectsService.findAllByUserId(req.user);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.projectsService.findOne(+id);
+    return this.projectsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProjectDto: Prisma.TransactionUpdateInput) {
-    return this.projectsService.update(+id, updateProjectDto);
+    return this.projectsService.update(id, updateProjectDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.projectsService.remove(+id);
+    return this.projectsService.remove(id);
   }
 }

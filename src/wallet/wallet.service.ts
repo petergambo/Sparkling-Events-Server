@@ -14,7 +14,7 @@ export class WalletService {
   async topUp(topUpDto: {
     amount: number,
     isTransactionProcessed: boolean,
-    userId: number
+    userId: string
   }) {
 
     const wallet = await this.databaseService.wallet.findUnique({ where: { userId: topUpDto.userId } })
@@ -36,7 +36,7 @@ export class WalletService {
   async deduct(deductDto: {
     amount: number,
     isTransactionProcessed: boolean,
-    userId: number
+    userId: string
   }) {
 
     const wallet = await this.databaseService.wallet.findUnique({ where: { userId: deductDto.userId } })
@@ -61,7 +61,7 @@ export class WalletService {
     return this.databaseService.wallet.findMany();
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return this.databaseService.wallet.findUnique({ where: { id } });
   }
 
@@ -69,11 +69,11 @@ export class WalletService {
     return this.databaseService.wallet.findFirst({ where: { user: { email: email } }, include: {pin: true} });
   }
 
-  async update(id: number, updateRequestDto: Prisma.WalletUpdateInput) {
+  async update(id: string, updateRequestDto: Prisma.WalletUpdateInput) {
     return this.databaseService.wallet.update({ where: { id }, data: updateRequestDto });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     return this.databaseService.wallet.delete({ where: { id } });
   }
 

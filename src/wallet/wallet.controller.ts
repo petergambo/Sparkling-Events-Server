@@ -92,16 +92,16 @@ export class WalletController {
 
   @Post('balance')
   findOne(@Param('id') id: string) {
-    return this.walletService.findOne(+id);
+    return this.walletService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateRequestDto: Prisma.WalletUpdateInput) {
-    return this.walletService.update(+id, updateRequestDto);
+    return this.walletService.update(id, updateRequestDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.walletService.remove(+id);
+    return this.walletService.remove(id);
   }
 }

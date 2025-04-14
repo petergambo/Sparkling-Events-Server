@@ -2,5 +2,5 @@
 export class FundDto {
     email: string;
     reference:string;
-    id: number;
+    id: string;
 }

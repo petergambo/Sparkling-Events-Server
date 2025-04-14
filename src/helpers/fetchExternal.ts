@@ -3,9 +3,11 @@ import axios, { AxiosHeaders, AxiosResponse } from "axios"
 import { RequestType } from "./@types"
 import { RELOADLY_AUTH_HEADER_CONFIG, RELOADLY_AUTH_URL } from "src/config/constants"
 
-let existingAirtimeDataToken = null
+let existingAirtimeDataToken = null;
 
-let existingBillsToken = null
+let existingBillsToken = null;
+
+let existingGiftCardToken = null;
 
 export const fetchExternal = async (url: string, type: RequestType, requestHeaders: AxiosHeaders, requestBody: any = {}): Promise<AxiosResponse<any, any>>  => {
     const response = await httpRequest(url, type, requestHeaders, requestBody)
@@ -50,6 +52,25 @@ if (type === "bills-pay" && existingBillsToken == null)
 }
 
 else if (type === "bills-pay" && existingBillsToken !== null) {
+  return existingBillsToken
+}
+
+// Gift Cards
+if (type === "gift-cards" && existingGiftCardToken == null)
+  {
+  const response = await httpRequest(RELOADLY_AUTH_URL, RequestType.POST, RELOADLY_AUTH_HEADER_CONFIG, {
+    client_id: process.env.RELOADLY_SANDBOX_CLIENT_ID,
+    client_secret: process.env.RELOADLY_SANDBOX_CLIENT_SECRET,
+    grant_type: 'client_credentials',
+    audience: "https://giftcards-sandbox.reloadly.com"
+  })
+
+  existingGiftCardToken = response.access_token
+
+  return response.access_token
+}
+
+else if (type === "gift-cards" && existingBillsToken !== null) {
   return existingBillsToken
 }
 }

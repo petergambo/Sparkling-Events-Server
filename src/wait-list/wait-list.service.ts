@@ -29,7 +29,7 @@ export class WaitListService {
     return this.databaseService.waitList.findMany();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.databaseService.waitList.findFirst({where: {id}});
   }
 

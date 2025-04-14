@@ -31,6 +31,7 @@ export class AppModule {
     consumer.apply(JwtAuthMiddleware).exclude(
       { path: 'users/register', method:  RequestMethod.POST },
       { path: 'users/login', method:  RequestMethod.POST },
+      { path: 'users/verify-otp', method:  RequestMethod.POST },
       { path: 'wait-list', method:  RequestMethod.POST },
     ).forRoutes('*'); // Apply to all routes
   }

@@ -12,7 +12,10 @@ import { AxiosHeaders } from 'axios';
 @Injectable()
 export class AirtimeReloadlyService {
   async purchase(createAirtimeDto: CreateAirtimeReloadlyDto) {
+
     const reloadlyToken = await getReloadlyToken("airtime-data")
+
+    console.log("Token",reloadlyToken)
 
     // const headers = VTPASS_HEADER_CONFIG;
     const headers = new AxiosHeaders({
@@ -26,6 +29,9 @@ export class AirtimeReloadlyService {
     const completeAirtimeDTO = { ...createAirtimeDto, customIdentifier: generateVTPassRequestId() }
 
     const response = await fetchExternal(url, RequestType.POST, headers, completeAirtimeDTO)
+
+    console.log("Response",response);
+
     return response
 
   }

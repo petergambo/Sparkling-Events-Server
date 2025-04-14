@@ -19,7 +19,7 @@ export class WaitListController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.waitListService.findOne(+id);
+    return this.waitListService.findOne(id);
   }
 
 }

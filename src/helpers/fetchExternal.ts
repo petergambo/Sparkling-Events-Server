@@ -24,7 +24,6 @@ export const getReloadlyToken = async (type: string) => {
     audience: `https://topups-sandbox.reloadly.com`
   })
 
-  // console.log(response, RELOADLY_AUTH_URL)
 
   existingAirtimeDataToken = response.access_token
 

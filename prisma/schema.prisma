@@ -135,7 +135,7 @@ enum TransactionStatus {
 enum ServiceType {
   AIRTIME
   DATA
-  ELECTRICITY
+  CABLE
   GIFT_CARD
   CRYPTO
   WALLET_TOPUP

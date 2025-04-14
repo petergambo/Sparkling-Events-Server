@@ -67,7 +67,7 @@ export class AirtimeReloadlyController {
             `<p>You have successfully purchased Data worth ${transaction.currency}${transaction.amount} for ${createAirtimeReloadlyDto.recipientPhone.number} </p> <p>Date: ${transaction.createdAt}<br/>
             Transaction Reference: ${transaction.reference}</p> <p>Thank you for transacting with us</p>`,
             
-            `${transaction.currency}${transaction.amount} Data Purchase Successful!`, 
+            `Data Purchase Successful!`, 
             
             "Transaction Notification"
           )

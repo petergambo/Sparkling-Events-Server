@@ -5,7 +5,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { AuthService } from 'src/middlewares/auth.service';
 
 import * as bcrypt from 'bcryptjs';
-import { generateAccountNumber, generateOtp, sendEmail, sendOtpEmail } from 'src/utils/functions';
+import {generateOtp, sendEmail, sendOtpEmail } from 'src/utils/functions';
 
 
 
@@ -37,17 +37,6 @@ export class UsersService {
       ...createUserDto,
       password: hashed_password,
       otp: otpCode, // assuming you have an `otp` field in your User model
-      Wallet: {
-        create: {
-          walletNo: generateAccountNumber(),
-          pin: {
-            create: {
-              pin: '0000',
-              changePinToken: '',
-            },
-          },
-        },
-      },
     };
 
     const newUser = await this.databaseService.user.create({
@@ -73,7 +62,12 @@ export class UsersService {
        try {
         await sendEmail(
           user.email,
-          "<p>Your account was logged in from Abuja Nigeria. If you do not recognize this activity, contact support now.</p>",
+          `<div>
+          <p>Hello ${user.first_name} ${user.last_name}</p>
+          <p>Your SEP Admin account was just accessed from Abuja Nigeria. If you do not recognize this activity, contact support now.</p>
+
+          <p>Sparkling Event Planners Ltd.<br/>FCT, Abuja</p>
+          </div>`,
           "Account Accessed", 
           "Login Notification"
         )
@@ -104,7 +98,6 @@ export class UsersService {
   findOne(id: string) {
     return this.databaseService.user.findUnique({
       where: { id },
-      include: { Wallet: true }
     })
   }
 
@@ -133,14 +126,16 @@ export class UsersService {
     try {
       await sendEmail(
         verifyOtpDTO.email,
-        `<p>Hello ${res.first_name}<br/>You have successfully verified your ICM Lux Elite account.</p>
-        <p>You can proceed to <a href='https://icm-lux-elite.vercel.app/auth/signin'>Login here</a> and enjoy the services on our platform</p>
+        `<div>
+        <p>Hello ${res.first_name}<br/>You have successfully verified your Sparkling Events Admin account.</p>
+        <p>You can proceed to <a href='#'>Login here</a></p>
         <p>Welcome onboard</p>
-        <p>ICM Lux Elite Team
+        <p>Sparkling Event Planners,
         <br/>Jos, Plateau state.
         </p>
+        </div>
         `,
-        "Account Verified Successfully", 
+        "Admin account Verified Successfully", 
         "Notification"
       )
      } catch (error) {

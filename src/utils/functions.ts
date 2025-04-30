@@ -54,14 +54,15 @@ export async function sendOtpEmail(email: string, otp: string) {
   
   });
   
+  const uniqueUrl = `https://sparkling-events.vercel.app/auth/otp/${email}`
 
 
   await transporter.sendMail({
-    from: `"ICM Lux Elite" <${process.env.EMAIL_USER}>`,
+    from: `"Sparkling Event Planners OTP" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Your OTP Code',
     html: `<p>Your OTP code is: <b>${otp}</b>. It expires in 10 minutes.</p> 
-    <p><a href="https://icm-lux-elite.vercel.app/auth/otp/${email}">Go to otp page here</a></p>`,
+    <p><a href="#">Go to otp page here</a></p>`,
   });
 }
 
@@ -78,7 +79,7 @@ export async function sendEmail(email: string, body: string, subject:string, ema
   });
 
   await transporter.sendMail({
-    from: `"ICM Lux Elite ${emailSenderTitle}" <${process.env.EMAIL_USER}>`,
+    from: `"Sparkling Event Planners ${emailSenderTitle}" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: subject,
     html: body,

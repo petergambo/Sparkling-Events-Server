@@ -22,33 +22,19 @@ model User {
   image_url  String
   isVerified Boolean  @default(false)
   phone      String   @default("")
-  otp        String? 
+  otp        String?
   role       UserRole @default(USER)
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  Wallet                 Wallet[]
-  Logs                  Logs[]
-  AirtimeDataConversion AirtimeDataConversion[]
-  Transaction           Transaction[]
+  Logs    Logs[]
+  Payment Payment[]
 }
 
-model Variations {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
-  variation_code   String   @unique
-  name             String
-  variation_amount String
-  fixedPrice       String
-  service          String
-  salePrice        String?
-  updatedAt        DateTime @default(now()) @updatedAt
-}
-
-enum ProjectCategory {
-  REAL_ESTATE
-  SWIMMING_POOL
-  ARCHITECTURAL_DESIGN
-  CONSTRUCTION
+enum EVENT_TYPE {
+  OUTDOOR
+  INDOOR
 }
 
 enum STATUS {
@@ -58,71 +44,41 @@ enum STATUS {
   CANCELLED
 }
 
-model Wallet {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  walletNo     String   @unique
-  amount       Float    @default(0.0)
-  userId       String   @unique @db.ObjectId
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  baseCurrency String   @default("NGN")
-  pin          Pin?
-}
-
-model Pin {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  walletId       String   @unique @db.ObjectId
-  wallet         Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
-  pin            String
-  changePinToken String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-}
-
 enum Device {
   WEB
   MOBILE
 }
 
 model Logs {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  device    Device   @default(WEB)
-  activity  String
-  userId    String @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  device   Device @default(WEB)
+  activity String
+  userId   String @db.ObjectId
+  user     User   @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
-model AirtimeDataConversion {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId          String @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id])
-  category        String
-  incomingPhone   String
-  networkProvider String
-  paymentMethod   String
-  amount          Int
-  status          String
-  bankName        String?
-  accountNumber   String?
-}
-
-model Transaction {
+model Payment {
   id          String            @id @default(auto()) @map("_id") @db.ObjectId
   reference   String            @unique
   email       String
-  userId      String @db.ObjectId
-  user        User              @relation(fields: [userId], references: [id])
-  type        ServiceType
+  userId      String?           @db.ObjectId
+  user        User?             @relation(fields: [userId], references: [id])
+  bookingId   String            @db.ObjectId
+  booking     Booking           @relation(fields: [bookingId], references: [id])
   amount      Int
   description String
   currency    String            @default("NGN")
-  isTopUp     Boolean?          @default(false)
+  method      String
   status      TransactionStatus @default(PENDING)
-  pdfUrl      String?
-  imageUrl    String?
-  createdAt   DateTime          @default(now())
+
+  pdfUrl   String?
+  imageUrl String?
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 enum TransactionStatus {
@@ -132,18 +88,129 @@ enum TransactionStatus {
   CANCELLED
 }
 
-enum ServiceType {
-  AIRTIME
-  DATA
-  CABLE
-  GIFT_CARD
-  CRYPTO
-  WALLET_TOPUP
+model Gallery {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String @unique
+  description String
+  imageUrl    String
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
-model WaitList {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  fullname  String
+model Package {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  imageUrl    String @default("")
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  PackageBundle PackageBundle[]
+}
+
+model Customer {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  first_name String
+  last_name  String
+  email      String
+  phone      String
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Booking Booking[]
+}
+
+model PackageBundle {
+  id                        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name                      String
+  imageUrl                  String  @default("https://res.cloudinary.com/dimqewtj6/image/upload/decorations-package-details_tghquv.png")
+  price                     Int
+  guestSizeRange            String
+  tagColor                  String  @default("#B9F2FF")
+  discountsAndSpecialOffers String?
+  offers                    String?
+  category                  String  @default("Executive")
+  group                     String? @default("Open Garden Event")
+  reward                    String?
+
+  packageId String   @db.ObjectId
+  package   Package? @relation(fields: [packageId], references: [id])
+
+  features Feature[]
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Booking Booking[]
+}
+
+
+
+
+
+model Feature {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+
+  // Connect back to PackageBundle
+  packageBundleId String        @db.ObjectId
+  packageBundle   PackageBundle @relation(fields: [packageBundleId], references: [id])
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+
+model Booking {
+  id                    String            @id @default(auto()) @map("_id") @db.ObjectId
+  reference             String?            @unique
+  email                 String
+  eventType             String
+  guestSize             String
+  amount                Int
+  date                  DateTime
+  venue                 String
+  additionalInformation String
+  packageId             String            @db.ObjectId
+  package               PackageBundle     @relation(fields: [packageId], references: [id])
+  customerId            String?           @db.ObjectId
+  customer              Customer?         @relation(fields: [customerId], references: [id])
+  status                TransactionStatus @default(PENDING)
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Payment Payment[]
+}
+
+model Review {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String  @unique
+  review   String
+  imageUrl String?
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Settings {
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  reference   String            @unique
+  email       String
+  userId      String            @db.ObjectId
+  amount      Int
+  description String
+  currency    String            @default("NGN")
+  isTopUp     Boolean?          @default(false)
+  status      TransactionStatus @default(PENDING)
+  pdfUrl      String?
+  imageUrl    String?
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

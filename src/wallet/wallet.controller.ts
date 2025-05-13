@@ -52,9 +52,9 @@ export class WalletController {
       email: verification_status.data.customer.email,
       amount: verification_status.data.amount / 100,
       currency: verification_status.data.currency,
-      description: "Booking Paymeny for Event",
-      user: { connect: { id: fundDto.id } },
-      booking: { connect: { id: fundDto.id } },
+      description: "Booking Payment for Event",
+      user: { connect: { id: fundDto.userId } },
+      booking: { connect: { id: fundDto.bookingId } },
       method: 'Online - Paystack',
       status: verification_status.data.status == "success"
         ? TransactionStatus.SUCCESS : TransactionStatus.PENDING,

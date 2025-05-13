@@ -36,7 +36,7 @@ export class WalletService {
 
 
   async findAll() {
-    return this.databaseService.payment.findMany();
+    return this.databaseService.payment.findMany({});
   }
 
   async findOne(id: string) {

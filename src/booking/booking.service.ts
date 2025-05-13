@@ -45,28 +45,28 @@ export class BookingService {
       if(booking)
       {
         // Mail Admin
-        // await sendEmail(booking.customer.email,
-        //   `<div>
-        //   Hello ${booking.customer.first_name} ${booking.customer.last_name}
-        //   Your Booking with Sparkling Event on hold has been made successfully. Please pay to finalize your reservation.
-        //   <table>
-        //     <tr>
-        //       <td>Date</td>
-        //       <td>${booking.date}</td>
-        //     </tr>
-        //      <tr>
-        //       <td>Event Type</td>
-        //       <td>${booking.eventType}</td>
-        //     </tr>
-        //     <tr>
-        //       <td>Guest Size</td>
-        //       <td>${booking.guestSize}</td>
-        //     </tr>
-        //   </table>
-        //   </div>`,
-        //   'Booking Notification',
-        //   'Notification'
-        // )
+        await sendEmail(process.env.BOOKING_REQUEST_EMAIL,
+          `<div>
+          Hello ${booking.customer.first_name} ${booking.customer.last_name}
+          Your Booking with Sparkling Event on hold has been made successfully. Please pay to finalize your reservation.
+          <table>
+            <tr>
+              <td>Date</td>
+              <td>${booking.date}</td>
+            </tr>
+             <tr>
+              <td>Event Type</td>
+              <td>${booking.eventType}</td>
+            </tr>
+            <tr>
+              <td>Guest Size</td>
+              <td>${booking.guestSize}</td>
+            </tr>
+          </table>
+          </div>`,
+          'Booking Notification',
+          'Notification'
+        )
 
 // Mail Customer
         await sendEmail(booking.customer.email,

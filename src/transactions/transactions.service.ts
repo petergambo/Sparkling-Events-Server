@@ -16,7 +16,7 @@ export class TransactionsService {
   }
 
   findAll() {
-    return this.databaseService.payment.findMany({include:{user: true}, orderBy:{createdAt: 'desc'}});
+    return this.databaseService.payment.findMany({include:{user: true, booking: true}, orderBy:{createdAt: 'desc'}});
   }
 
   findAllByUserId(id: string) {

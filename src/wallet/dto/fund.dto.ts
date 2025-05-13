@@ -2,5 +2,6 @@
 export class FundDto {
     email: string;
     reference:string;
-    id: string;
+    userId: string;
+    bookingId: string;
 }

@@ -13,7 +13,7 @@ export class PackageService {
 
       const newPackage = await this.databaseService.package.create({data: createPackageDto})
 
-      sendEmail(`sepconceptz@gmail.com`,
+      sendEmail(process.env.ADMIN_EMAIL,
         `<div>New Package: <strong>${newPackage.name}</strong> has been created successfully.
         <p>If you do not recognize this activity, please contact support now.</p>
         <p>Sparkling Event Planners<br/>
@@ -42,6 +42,13 @@ export class PackageService {
     return this.databaseService.package.findFirst({
       where: {name: name},
       include: {PackageBundle: true}
+    });
+  }
+
+  findBySubPackageId(id: string) {
+    return this.databaseService.packageBundle.findFirst({
+      where: {id},
+      include: {package: true}
     });
   }
 

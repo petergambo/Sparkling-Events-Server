@@ -27,6 +27,11 @@ export class PackageController {
     return this.packageService.findPackageItems(packageName);
   }
 
+  @Get('get-by-subpackage-id/:subPackageId')
+  findSubPackageId(@Param('subPackageId') subPackageId: string) {
+    return this.packageService.findBySubPackageId(subPackageId);
+  }
+
   @Get('get-by-subpackage-name/:subPackageName')
   findSubPackageName(@Param('subPackageName') subPackageName: string) {
     return this.packageService.findBySubPackageName(subPackageName);

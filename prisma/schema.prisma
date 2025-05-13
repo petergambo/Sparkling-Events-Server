@@ -28,8 +28,9 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  Logs    Logs[]
-  Payment Payment[]
+  Logs Logs[]
+
+  ContactMessage ContactMessage[]
 }
 
 enum EVENT_TYPE {
@@ -65,7 +66,7 @@ model Payment {
   reference   String            @unique
   email       String
   userId      String?           @db.ObjectId
-  user        User?             @relation(fields: [userId], references: [id])
+  user        Customer?         @relation(fields: [userId], references: [id])
   bookingId   String            @db.ObjectId
   booking     Booking           @relation(fields: [bookingId], references: [id])
   amount      Int
@@ -120,6 +121,8 @@ model Customer {
   updated_at DateTime @updatedAt
 
   Booking Booking[]
+
+  Payment Payment[]
 }
 
 model PackageBundle {
@@ -146,13 +149,9 @@ model PackageBundle {
   Booking Booking[]
 }
 
-
-
-
-
 model Feature {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
+  name        String  @unique
   description String?
 
   // Connect back to PackageBundle
@@ -163,12 +162,9 @@ model Feature {
   updatedAt DateTime @updatedAt
 }
 
-
-
-
 model Booking {
   id                    String            @id @default(auto()) @map("_id") @db.ObjectId
-  reference             String?            @unique
+  reference             String?           @unique
   email                 String
   eventType             String
   guestSize             String
@@ -210,6 +206,46 @@ model Settings {
   status      TransactionStatus @default(PENDING)
   pdfUrl      String?
   imageUrl    String?
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Affiliate {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  fullname     String
+  phone_number String
+  email        String @unique
+  status       STATUS @default(PENDING)
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Invest {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  fullname     String
+  phone_number String
+  email        String @unique
+  status       STATUS @default(PENDING)
+
+  createdAt  DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+enum MESSAGE_STATUS {
+  PENDING
+  ANSWERED
+}
+
+model ContactMessage {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  message     String
+  email       String         @unique
+  status      MESSAGE_STATUS @default(PENDING)
+  userId      String         @db.ObjectId
+  answered_by User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt  DateTime @default(now())
   updated_at DateTime @updatedAt

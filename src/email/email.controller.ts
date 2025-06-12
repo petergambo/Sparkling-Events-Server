@@ -9,7 +9,7 @@ export class EmailController {
 
   @Post()
   create(@Body() createEmailDto: CreateEmailDto) {
-    return this.emailService.create(createEmailDto);
+    return this.emailService.send(createEmailDto);
   }
 
   @Get()

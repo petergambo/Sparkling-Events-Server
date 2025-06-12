@@ -1,11 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEmailDto } from './dto/create-email.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
+import { sendEmail } from 'src/utils/functions';
 
 @Injectable()
 export class EmailService {
-  create(createEmailDto: CreateEmailDto) {
-    return 'This action adds a new email';
+  async send(createEmailDto: CreateEmailDto) {
+    
+    await sendEmail(
+      `sepconceptz@gmail.com`,
+      createEmailDto.message,
+      `New contact message.`,
+      `Sparkling Events Contact Form`
+    )
+
+    return await sendEmail(
+      createEmailDto.email,
+      createEmailDto.message,
+      `Thank you for contacting us.`,
+      `Sparkling Events Contact Form`
+    );
   }
 
   findAll() {

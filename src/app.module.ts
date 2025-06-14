@@ -39,6 +39,7 @@ export class AppModule {
       { path: 'gallery', method:  RequestMethod.GET },
       { path: 'affiliate', method:  RequestMethod.POST },
       { path: 'invest', method:  RequestMethod.POST },
+      { path: 'email', method:  RequestMethod.POST },
 
     ).forRoutes('*'); // Apply to all routes
   }

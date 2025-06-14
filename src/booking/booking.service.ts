@@ -10,6 +10,7 @@ export class BookingService {
   constructor(private readonly databaseService: DatabaseService){}
   
   async create(createPackageDto: CreateBookingDto) {
+   
     try {
       const newCustomer = await this.databaseService.customer.create({
         data: {
@@ -17,7 +18,6 @@ export class BookingService {
           last_name: createPackageDto.customer.last_name,
           email: createPackageDto.customer.email,
           phone: createPackageDto.customer.phone,
-          
         },
       });
       
@@ -25,6 +25,8 @@ export class BookingService {
         data: {
           reference: generateVTPassRequestId(),
           email: createPackageDto.email,
+          colorChoices: createPackageDto.colorChoices,
+          paymentPlan: createPackageDto.paymentPlan,
           eventType: createPackageDto.eventType,
           guestSize: createPackageDto.guestSize,
           amount: createPackageDto.amount,
@@ -41,7 +43,29 @@ export class BookingService {
         include: {customer: true, package: true}
       });
       
-      // const booking = await this.databaseService.booking.create({data: createPackageDto, });
+       // Fix next payment schedule
+    if(Number(createPackageDto.paymentPlan))
+  
+    {
+      const paymentPlan = Number(createPackageDto.paymentPlan)
+
+      if(paymentPlan !== 100)
+      {
+      const nextPaymentDate = new Date(Date.now());
+      nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
+      createPackageDto.nextPaymentDate = nextPaymentDate.toISOString();
+      }
+
+      await this.databaseService.schedulePayments.create({
+        data: {
+          bookingId: booking.id,
+          paymentDate: createPackageDto.nextPaymentDate,
+          amount: booking.package.price - createPackageDto.amount,
+          initialAmountPayed: (Number(booking.package.price) * (paymentPlan / 100)),
+        }
+      })
+    }
+
       if(booking)
       {
         // Mail Admin
@@ -62,6 +86,25 @@ export class BookingService {
               <td>Guest Size</td>
               <td>${booking.guestSize}</td>
             </tr>
+            <tr>
+              <td>Payment Plan</td>
+              <td>${booking.paymentPlan}% Upfront</td>
+            </tr>
+
+             <tr>
+              <td>Amount</td>
+              <td>${booking.amount}</td>
+            </tr>
+
+             <tr>
+              <td>Amount</td>
+              <td>${booking.amount}</td>
+            </tr>
+
+            <tr>
+              <td>Color Choices</td>
+              <td>${booking.colorChoices}</td>
+            </tr>
           </table>
           </div>`,
           'Booking Notification',
@@ -74,14 +117,6 @@ export class BookingService {
           Hello ${booking.customer.first_name} ${booking.customer.last_name}
           Your Booking with Sparkling Event on hold has been made successfully. Please pay to finalize your reservation.
           <table>
-          <tr>
-              <td>ID</td>
-              <td>${booking.id}</td>
-            </tr>
-            <tr>
-              <td>Package</td>
-              <td>${booking.package.name}</td>
-            </tr>
             <tr>
               <td>Date</td>
               <td>${booking.date}</td>
@@ -93,6 +128,25 @@ export class BookingService {
             <tr>
               <td>Guest Size</td>
               <td>${booking.guestSize}</td>
+            </tr>
+            <tr>
+              <td>Payment Plan</td>
+              <td>${booking.paymentPlan}% Upfront</td>
+            </tr>
+
+             <tr>
+              <td>Amount</td>
+              <td>${booking.amount}</td>
+            </tr>
+
+             <tr>
+              <td>Amount</td>
+              <td>${booking.amount}</td>
+            </tr>
+
+            <tr>
+              <td>Color Choices</td>
+              <td>${booking.colorChoices}</td>
             </tr>
           </table>
           </div>`,
@@ -109,14 +163,14 @@ export class BookingService {
 
   findAll() {
     return this.databaseService.booking.findMany({
-      include:{package: true},
+      include:{package: true, SchedulePayments: true},
       orderBy:{createdAt: 'desc'}
     });
   }
 
   findOne(id: string) {
     return this.databaseService.booking.findFirst({where:{id},
-    include:{package: true, customer: true}});
+    include:{package: true, customer: true, SchedulePayments: true}});
   }
 
   update(id: string, updateBookingDto: Prisma.PackageUpdateInput) {

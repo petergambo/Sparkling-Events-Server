@@ -141,7 +141,7 @@ model PackageBundle {
   packageId String   @db.ObjectId
   package   Package? @relation(fields: [packageId], references: [id])
 
-  features Feature[]
+  features String[]
 
   createdAt  DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -149,18 +149,18 @@ model PackageBundle {
   Booking Booking[]
 }
 
-model Feature {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  name        String  @unique
-  description String?
+//model Feature {
+// id          String  @id @default(auto()) @map("_id") @db.ObjectId
+// name        String  @unique
+//  description String?
 
-  // Connect back to PackageBundle
-  packageBundleId String        @db.ObjectId
-  packageBundle   PackageBundle @relation(fields: [packageBundleId], references: [id])
+// Connect back to PackageBundle
+//  packageBundleId String        @db.ObjectId
+//  packageBundle   PackageBundle @relation(fields: [packageBundleId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+//  createdAt DateTime @default(now())
+// updatedAt DateTime @updatedAt
+// }
 
 model Booking {
   id                    String            @id @default(auto()) @map("_id") @db.ObjectId
@@ -168,6 +168,9 @@ model Booking {
   email                 String
   eventType             String
   guestSize             String
+  colorChoices          String
+  paymentPlan           String
+  nextPayment           DateTime?         @default(now())
   amount                Int
   date                  DateTime
   venue                 String
@@ -177,11 +180,26 @@ model Booking {
   customerId            String?           @db.ObjectId
   customer              Customer?         @relation(fields: [customerId], references: [id])
   status                TransactionStatus @default(PENDING)
+  paymentStatus         TransactionStatus @default(PENDING)
 
   createdAt  DateTime @default(now())
   updated_at DateTime @updatedAt
 
   Payment Payment[]
+
+  SchedulePayments SchedulePayments[]
+}
+
+model SchedulePayments {
+  id                 String            @id @default(auto()) @map("_id") @db.ObjectId
+  bookingId          String            @db.ObjectId
+  booking            Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  status             TransactionStatus @default(PENDING)
+  paymentDate        DateTime
+  amount             Int
+  initialAmountPayed Int
+  createdAt          DateTime          @default(now())
+  updated_at         DateTime          @updatedAt
 }
 
 model Review {

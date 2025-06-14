@@ -3,6 +3,9 @@ export class CreateBookingDto {
   reference: string;
     email: string;
     eventType: string;
+    colorChoices : string;
+    paymentPlan: string;
+    nextPaymentDate?: string;
     guestSize: string;
     amount: number;
     date: Date;

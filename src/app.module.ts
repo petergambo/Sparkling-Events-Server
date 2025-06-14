@@ -13,10 +13,11 @@ import { ReviewModule } from './review/review.module';
 import { CloudinaryUploadModule } from './cloudinary-upload/cloudinary-upload.module';
 import { AffiliateModule } from './affiliate/affiliate.module';
 import { InvestModule } from './invest/invest.module';
+import { EmailModule } from './email/email.module';
 
 
 @Module({
-  imports: [UsersModule, TransactionsModule, WalletModule, GalleryModule, PackageModule, BookingModule, ReviewModule, CloudinaryUploadModule, AffiliateModule, InvestModule],
+  imports: [UsersModule, EmailModule, TransactionsModule, WalletModule, GalleryModule, PackageModule, BookingModule, ReviewModule, CloudinaryUploadModule, AffiliateModule, InvestModule],
   controllers: [AppController],
   providers: [AppService],
 })

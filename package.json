@@ -36,7 +36,7 @@
     "express": "^4.21.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.10.0",
+    "nodemailer": "^7.0.11",
     "paystack-sdk": "^2.5.19",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
